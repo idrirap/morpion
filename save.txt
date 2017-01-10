@@ -1,10 +1,1 @@
-<Partie0 type="save"|nom1="joueurRandom"|nom2="connard">
-[1:1;1][2:0;2][1:0;0][2:1;2][1:2;2]1
-<Partie1 type="save"|nom1="ezfzer"|nom2="ooooo">
-[1:2;2][2:0;0][1:1;1][2:1;0][1:0;2][2:2;0]2
-<Partie2 type="save"|nom1="mouloud"|nom2="momo">
-[1:0;1][2:0;0][1:1;1][2:0;2][1:2;0][2:1;0][1:2;1]1
-<Partie3 type="save"|nom1="idris"|nom2="adolf">
-[1:0;0][2:0;2][1:1;1][2:2;0][1:2;2]1
-<Partie4 type="save"|nom1="joueur1"|nom2="joueur2">
-[1:0;1][2:2;1][1:1;1][2:0;0]
+<Partie0 type="save"|nom1="a"|nom2="a">

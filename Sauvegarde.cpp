@@ -14,17 +14,28 @@ Sauvegarde::Sauvegarde(){
   ifstream fichier;
   fichier.open(nomFichier);
   while(getline(fichier,ligne)){
-    if(ligne[0]=='<'){
+    if(ligne[0]=='<' && ligne[1]=='P'){
       ++compteur;
     }
   }
   fichier.close();
   nbParties=compteur;
+  compteur=0;
+  fichier.open("saveTournoi.txt");
+  while(getline(fichier,ligne)){
+    if(ligne[0]=='<' && ligne[1]=='T'){
+      ++compteur;
+    }
+  }
+  fichier.close();
+  nbTournoi=compteur;
 }
 
 Sauvegarde::~Sauvegarde(){
   delete nomFichier;
 }
+
+//Creer des [X:X;X]
 
 void Sauvegarde::ajouterCoup(int x, int y, int joueur){
   char coup[8];
@@ -37,6 +48,20 @@ void Sauvegarde::ajouterCoup(int x, int y, int joueur){
   fichier<<coup;
   fichier.close();
 }
+
+void Sauvegarde::ajouterCoupTournoi(int x, int y, int joueur){
+  char coup[8];
+  strcpy(coup, "[X:X;X]");
+  coup[1]='0'+joueur;
+  coup[3]='0'+x;
+  coup[5]='0'+y;
+  ofstream fichier;
+  fichier.open("saveTournoi.txt", ios::out | ios::app | ios::binary);
+  fichier<<coup;
+  fichier.close();
+}
+
+//Creer la ligne < ... >
 
 void Sauvegarde::initialiserPartie(char* Joueur1, char* Joueur2){
   char balise1[10];
@@ -54,6 +79,21 @@ void Sauvegarde::initialiserPartie(char* Joueur1, char* Joueur2){
   nbParties++;
 }
 
+void Sauvegarde::initialiserTournoi(char* Joueur1, char* Joueur2){
+  char balise1[10];
+  char balise2[200];
+  strcpy(balise1, "<Tournoi");
+  strcpy(balise2, " type=\"save\"|nom1=\"");
+  strcat(balise2, Joueur1);
+  strcat(balise2,"\"|nom2=\"");
+  strcat(balise2, Joueur2);
+  strcat(balise2,"\">\n");
+  ofstream fichier;
+  fichier.open("saveTournoi.txt", ios::out | ios::app | ios::binary);
+  fichier<<balise1<<nbTournoi<<balise2;
+  fichier.close();
+}
+
 void Sauvegarde::finPartie(int Victorieux){
   ofstream fichier;
   fichier.open(nomFichier, ios::out | ios::app | ios::binary);
@@ -61,8 +101,19 @@ void Sauvegarde::finPartie(int Victorieux){
   fichier.close();
 }
 
+void Sauvegarde::finManche(int Victorieux){
+  ofstream fichier;
+  fichier.open("saveTournoi.txt", ios::out | ios::app | ios::binary);
+  fichier<<Victorieux<<"\n";
+  fichier.close();
+}
+
 int Sauvegarde::getNbParties(){
   return nbParties;
+}
+
+int Sauvegarde::getNbTournois(){
+  return nbTournoi;
 }
 
 void Sauvegarde::getPartie(int partie, char*c){
@@ -72,17 +123,60 @@ void Sauvegarde::getPartie(int partie, char*c){
     ifstream fichier;
     fichier.open(nomFichier);
     getline(fichier,ligne);
-    while(compteur<partie){
-      if(ligne[0]=='<'){
-        ++compteur;
+    if(partie!=0){
+      while(compteur<=partie){
+        if(ligne[0]=='<' && ligne[1]=='P'){
+          ++compteur;
+        }
+        getline(fichier,ligne);
       }
-      getline(fichier,ligne);
     }
-    if(partie==0){
+    else{
       getline(fichier,ligne);
     }
     fichier.close();
     strcpy(c, ligne.c_str());
+  }
+  else{
+    std::cout << "Erreur out of bound!" << '\n';
+  }
+}
+
+void Sauvegarde::getTournoi(int tournoi, char manches[15][200], int &taille){
+  if( tournoi >=0 && tournoi < nbTournoi){
+    int i=0;
+    taille=0;
+    int compteur=0;
+    string ligne;
+    ifstream fichier;
+    fichier.open("saveTournoi.txt");
+    getline(fichier,ligne);
+    if(tournoi!=0){
+      while(compteur<=tournoi){
+        if(ligne[0]=='<' && ligne[1]=='P'){
+          ++compteur;
+        }
+        getline(fichier,ligne);
+      }
+      while(ligne[0]!='<' && !fichier.eof()){
+        strcpy(manches[i], ligne.c_str());
+        i++;
+        getline(fichier, ligne);
+        taille++;
+      }
+    }
+    else{
+      getline(fichier,ligne);
+      while(ligne[0]!='<' && !fichier.eof()){
+        strcpy(manches[i], ligne.c_str());
+        i++;
+        getline(fichier, ligne);
+        taille++;
+      }
+    }
+  }
+  else{
+    std::cout << "Erreur out of bound!" << '\n';
   }
 }
 
@@ -95,7 +189,7 @@ void Sauvegarde::getJoueurs(int partie, char*j1, char*j2){
     getline(fichier,ligne);
     while(compteur<partie){
       getline(fichier,ligne);
-      if(ligne[0]=='<'){
+      if(ligne[0]=='<' && ligne[1]=='P'){
         ++compteur;
       }
     }

@@ -72,16 +72,46 @@ void Plateau::jouerCoup(int joueur, Sauvegarde *s) {
 	cout << "Tour du joueur " << joueur <<endl;
 	int x;
 	int y;//ajoute la secu
+	char tmp[50];
 	do {
+		x=666;
+		y=666;
 		cout << "Entrez x : ";
-		cin >> x;
+		cin>>tmp;
+		if(tmp[0]>='0' && tmp[0]<='9')
+			x=tmp[0]-'0';
 		cout << "Entrez y : ";
-		cin >> y;
+		cin>>tmp;
+		if(tmp[0]>='0' && tmp[0]<='9')
+			y=tmp[0]-'0';
 		if (!isEmpty(x, y))
 			cout << "Case deja pleine ou hors du tableau" << endl;
 	} while (!isEmpty(x,y));
 	tab[y][x].setJeton(joueur);
 	s->ajouterCoup(x,y,joueur);
+}
+
+void Plateau::jouerCoupTournoi(int joueur, Sauvegarde *s) {
+	cout << "Tour du joueur " << joueur <<endl;
+	int x;
+	int y;//ajoute la secu
+	char tmp[50];
+		do {
+		x=666;
+		y=666;
+		cout << "Entrez x : ";
+		cin>>tmp;
+		if(tmp[0]>='0' && tmp[0]<='9')
+			x=tmp[0]-'0';
+		cout << "Entrez y : ";
+		cin>>tmp;
+		if(tmp[0]>='0' && tmp[0]<='9')
+			y=tmp[0]-'0';
+		if (!isEmpty(x, y))
+			cout << "Case deja pleine ou hors du tableau" << endl;
+	} while (!isEmpty(x,y));
+	tab[y][x].setJeton(joueur);
+	s->ajouterCoupTournoi(x,y,joueur);
 }
 
 void Plateau::reinitialiser() {
